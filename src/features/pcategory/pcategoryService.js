@@ -12,13 +12,18 @@ const getAProductCategory = async (id) => {
 
   return response.data;
 };
-const updateAProductCategory = async (id) => {
-  const response = await axios.put(`${base_url}category/:id`);
+const updateAProductCategory = async (category) => {
+  console.log(category);
+  const response = await axios.put(
+    `${base_url}category/${category.id}`,
+    { title: category.pCatData.title },
+    config
+  );
 
   return response.data;
 };
 const deleteAProductCategory = async (id) => {
-  const response = await axios.delete(`${base_url}category/:id`);
+  const response = await axios.delete(`${base_url}category/${id}`, config);
 
   return response.data;
 };

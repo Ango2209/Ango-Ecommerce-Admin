@@ -12,10 +12,10 @@ export const getCoupons = createAsyncThunk(
   }
 );
 export const getACoupon = createAsyncThunk(
-  "color/get-color",
+  "coupon/get-coupon",
   async (id, thunkAPI) => {
     try {
-      return await couponService.getCoupons(id);
+      return await couponService.getACoupon(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

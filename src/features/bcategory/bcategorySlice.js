@@ -13,7 +13,7 @@ export const getBlogCategory = createAsyncThunk(
   }
 );
 export const getABlogCategory = createAsyncThunk(
-  "bCategory/get-bCategorie",
+  "bCategory/get-bCategory",
   async (id, thunkAPI) => {
     try {
       return await bCategoryService.getABCategory(id);
@@ -23,20 +23,20 @@ export const getABlogCategory = createAsyncThunk(
   }
 );
 export const updateABlogCategory = createAsyncThunk(
-  "bCategory/update-bCategorie",
+  "bCategory/update-bCategories",
   async (id, thunkAPI) => {
     try {
-      return await bCategoryService.updateABlogCategory(id);
+      return await bCategoryService.updateABCategory(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 export const deleteABlogCategory = createAsyncThunk(
-  "bCategory/delete-bCategorie",
+  "bCategory/delete-bCategories",
   async (id, thunkAPI) => {
     try {
-      return await bCategoryService.deleteABlogCategory(id);
+      return await bCategoryService.deleteABCategory(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

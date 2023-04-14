@@ -27,23 +27,20 @@ const Customers = () => {
   useEffect(() => {
     dispatch(getUsers());
   }, []);
-
-  const customerState = useSelector(
+  const customerstate = useSelector(
     (state) => state?.customer?.customers?.data?.data
   );
-  console.log(customerState);
+  console.log(customerstate);
   const data1 = [];
-  if (customerState !== undefined) {
-    for (let i = 0; i < customerState.length; i++) {
-      if (customerState[i].role !== "admin") {
-        data1.push({
-          key: i + 1,
-          name: customerState[i].firstName + " " + customerState[i].lastName,
-          email: customerState[i].email,
-          mobile: customerState[i].mobile,
-        });
-      }
-    }
+  for (let i = 0; i < customerstate?.length; i++) {
+    // if (customerstate[i].role !== "admin") {
+    data1.push({
+      key: i + 1,
+      name: customerstate[i].firstName + " " + customerstate[i].lastName,
+      email: customerstate[i].email,
+      mobile: customerstate[i].mobile,
+    });
+    // }
   }
 
   return (

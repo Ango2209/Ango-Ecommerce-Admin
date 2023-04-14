@@ -72,7 +72,7 @@ const BrandList = () => {
     dispatch(deleteABrand(id));
     setTimeout(() => {
       dispatch(getBrands());
-    }, 100);
+    }, 500);
   };
   return (
     <div>

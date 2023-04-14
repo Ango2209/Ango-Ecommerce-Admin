@@ -11,13 +11,18 @@ const getAColor = async () => {
 
   return response.data;
 };
-const updateAColor = async () => {
-  const response = await axios.put(`${base_url}color/:id`);
+const updateAColor = async (color) => {
+  const response = await axios.put(
+    `${base_url}color/${color.id}`,
+    { title: color.colorData.title },
+    config
+  );
 
   return response.data;
 };
-const deleteAColor = async () => {
-  const response = await axios.delete(`${base_url}color/:id`);
+
+const deleteAColor = async (id) => {
+  const response = await axios.delete(`${base_url}color/${id}`, config);
 
   return response.data;
 };

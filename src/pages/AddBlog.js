@@ -1,91 +1,120 @@
-import React, { useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import CustomInput from "../components/CustomInput";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import * as Yup from "yup";
-import { useFormik } from "formik";
 import Dropzone from "react-dropzone";
-import { useDispatch, useSelector } from "react-redux";
-import { createBlog } from "../features/blogs/blogSlice";
-import { uploadImg, delImg } from "../features/upload/uploadSlice";
+import { delImg, uploadImg } from "../features/upload/uploadSlice";
 import { toast } from "react-toastify";
-import { getCategory } from "../features/pcategory/pcategorySlice";
+import * as yup from "yup";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import { createBlog, getABlog, updateABlog } from "../features/blogs/blogSlice";
 import { resetState } from "../features/extraReducerFactory/extraReducerFactory";
 
-let schema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  description: Yup.string().required("Description is Required"),
-  category: Yup.string().required("Category is required"),
+import { getBlogCategory } from "../features/bcategory/bcategorySlice";
+
+let schema = yup.object().shape({
+  title: yup.string().required("Title is Required"),
+  description: yup.string().required("Description is Required"),
+  category: yup.string().required("Category is Required"),
 });
 const AddBlog = () => {
   const dispatch = useDispatch();
-  const imgState = useSelector((state) => state?.upload?.images);
-  const img = [];
-  imgState?.forEach((i) => {
-    const parts = i.url.split("/");
-    const public_id = parts[parts.length - 1].split(".")[0];
-    img.push({
-      public_id: public_id,
-      url: i.url,
-    });
-  });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const getBlogId = location.pathname.split("/")[3];
+  const imgState = useSelector((state) => state.upload.images);
+  const bCatState = useSelector(
+    (state) => state.bCategory.storageData?.data?.data
+  );
+  const blogState = useSelector((state) => state.blog);
+  const { isSuccess, isError, isLoading, createdData, getAData, updatedData } =
+    blogState;
+  const blogName = getAData?.title;
+  const blogDesc = getAData?.description;
+  const blogCategory = getAData?.category;
+  const blogImages = getAData?.images;
+  console.log(getAData);
   useEffect(() => {
-    dispatch(getCategory());
+    if (getBlogId !== undefined) {
+      dispatch(getABlog(getBlogId));
+      img.push(blogImages);
+    } else {
+      dispatch(resetState());
+    }
+  }, [getBlogId]);
+
+  useEffect(() => {
+    dispatch(resetState());
+    dispatch(getBlogCategory());
   }, []);
-  const categoryState = useSelector(
-    (state) => state?.pcategory?.storageData?.data?.data
-  );
-  useEffect(() => {
-    formik.values.images = img;
-  }, [img]);
-  const { isSuccess, isError, createdData } = useSelector(
-    (state) => state.blog
-  );
 
   useEffect(() => {
     if (isSuccess && createdData) {
-      toast.success("Product Added Successfully!");
+      toast.success("Blog Added Successfullly!");
+    }
+    if (isSuccess && updatedData) {
+      toast.success("Blog Updated Successfullly!");
+      navigate("/admin/blog-list");
     }
     if (isError) {
       toast.error("Something Went Wrong!");
     }
-  }, [isSuccess, isError, createdData]);
+  }, [isSuccess, isError, isLoading]);
+
+  const img = [];
+  imgState.forEach((i) => {
+    img.push({
+      public_id: i.public_id,
+      url: i.url,
+    });
+  });
+
+  useEffect(() => {
+    formik.values.images = img;
+  }, [blogImages]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      description: "",
-      category: "",
-      quantity: "",
+      title: blogName || "",
+      description: blogDesc || "",
+      category: blogCategory || "",
       images: "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createBlog(values));
-      setTimeout(() => {
+      if (getBlogId !== undefined) {
+        const data = { id: getBlogId, blogData: values };
+        dispatch(updateABlog(data));
         dispatch(resetState());
-      }, 1000);
+      } else {
+        dispatch(createBlog(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
+      }
     },
   });
+
   return (
     <div>
-      <h3 className="mb-4 title">Add blog</h3>
+      <h3 className="mb-4 title">
+        {getBlogId !== undefined ? "Edit" : "Add"} Blog
+      </h3>
 
-      <div>
-        <form
-          action=""
-          onSubmit={formik.handleSubmit}
-          className="d-flex gap-3 flex-column"
-        >
-          <div className="mt-3">
+      <div className="">
+        <form action="" onSubmit={formik.handleSubmit}>
+          <div className="mt-4">
             <CustomInput
               type="text"
+              label="Enter Blog Title"
               name="title"
-              label="Enter Blog"
               onCh={formik.handleChange("title")}
               onBl={formik.handleBlur("title")}
               val={formik.values.title}
-              id="blog"
             />
           </div>
           <div className="error">
@@ -96,14 +125,14 @@ const AddBlog = () => {
             onChange={formik.handleChange("category")}
             onBlur={formik.handleBlur("category")}
             value={formik.values.category}
-            className="form-control py-3 mb-3 mt-3"
+            className="form-control py-3  mt-3"
             id=""
           >
-            <option value="">Select Category</option>
-            {categoryState?.map((category, index) => {
+            <option value="">Select Blog Category</option>
+            {bCatState?.map((i, j) => {
               return (
-                <option key={index} value={category.title}>
-                  {category.title}
+                <option key={j} value={i.title}>
+                  {i.title}
                 </option>
               );
             })}
@@ -113,6 +142,7 @@ const AddBlog = () => {
           </div>
           <ReactQuill
             theme="snow"
+            className="mt-3"
             name="description"
             onChange={formik.handleChange("description")}
             value={formik.values.description}
@@ -136,15 +166,13 @@ const AddBlog = () => {
               )}
             </Dropzone>
           </div>
-          <div className="showimages d-flex flex-wrap gap-3">
+          <div className="showimages d-flex flex-wrap mt-3 gap-3">
             {imgState?.map((i, j) => {
-              const parts = i.url.split("/");
-              const public_id = parts[parts.length - 1].split(".")[0];
               return (
                 <div className=" position-relative" key={j}>
                   <button
                     type="button"
-                    onClick={() => dispatch(delImg(public_id))}
+                    onClick={() => dispatch(delImg(i.public_id))}
                     className="btn-close position-absolute"
                     style={{ top: "10px", right: "10px" }}
                   ></button>
@@ -153,15 +181,17 @@ const AddBlog = () => {
               );
             })}
           </div>
+
           <button
+            className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
-            className="btn btn-success border-0  rounded-3 my-5"
           >
-            Add Blog
+            {getBlogId !== undefined ? "Edit" : "Add"} Blog
           </button>
         </form>
       </div>
     </div>
   );
 };
+
 export default AddBlog;

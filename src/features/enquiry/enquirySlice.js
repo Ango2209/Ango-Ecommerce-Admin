@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import enquiryService from "./enquiryService";
+import extraReducersFactory from "../extraReducerFactory/extraReducerFactory";
 
 export const getEnquiries = createAsyncThunk(
   "enquiry/get-enquiries",
@@ -11,6 +12,49 @@ export const getEnquiries = createAsyncThunk(
     }
   }
 );
+export const createEnquiry = createAsyncThunk(
+  "coupon/create-enquiry",
+  async (couponData, thunkAPI) => {
+    try {
+      return await enquiryService.createCoupon(couponData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const deleteAEnquiry = createAsyncThunk(
+  "enquiry/delete-enquiry",
+  async (id, thunkAPI) => {
+    try {
+      return await enquiryService.deleteEnquiry(id);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getAEnquiry = createAsyncThunk(
+  "enquiry/get-enquiry",
+  async (id, thunkAPI) => {
+    try {
+      return await enquiryService.getEnquiry(id);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateAEnquiry = createAsyncThunk(
+  "enquiry/update-enquiry",
+  async (enq, thunkAPI) => {
+    try {
+      return await enquiryService.updateEnquiry(enq);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const resetState = createAction("Reset_all");
+
 const initialState = {
   enquiries: [],
   isError: false,
@@ -18,27 +62,19 @@ const initialState = {
   isSuccess: false,
   message: "",
 };
-export const customerSlice = createSlice({
+export const enquirySlice = createSlice({
   name: "enquiries",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(getEnquiries.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getEnquiries.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = false;
-        state.isSuccess = true;
-        state.enquiries = action.payload;
-      })
-      .addCase(getEnquiries.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = action.error;
-      });
-  },
+  extraReducers: (builder) =>
+    extraReducersFactory(
+      builder,
+      getEnquiries,
+      createEnquiry,
+      getAEnquiry,
+      deleteAEnquiry,
+      updateAEnquiry
+    ),
 });
-export default customerSlice.reducer;
+
+export default enquirySlice.reducer;

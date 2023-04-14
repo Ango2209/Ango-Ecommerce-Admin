@@ -1,19 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getBlogCategory } from "../features/bcategory/bcategorySlice";
+import {
+  deleteABlogCategory,
+  getBlogCategory,
+} from "../features/bcategory/bcategorySlice";
+import CustomModal from "../components/CustomModal";
+import { resetState } from "../features/extraReducerFactory/extraReducerFactory";
+
 const columns = [
   {
     title: "SNo",
     dataIndex: "key",
   },
   {
-    title: "Title",
+    title: "Name",
     dataIndex: "name",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
 
   {
@@ -23,42 +29,73 @@ const columns = [
 ];
 
 const BlogCaList = () => {
-  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [blogCatId, setblogCatId] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setblogCatId(e);
+  };
 
+  const hideModal = () => {
+    setOpen(false);
+  };
+  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getBlogCategory());
-    console.log("Hey");
   }, []);
 
-  const blogState = useSelector(
+  const bCatState = useSelector(
     (state) => state?.bCategory?.storageData?.data?.data
   );
-  console.log(blogState);
-  let data1 = [];
-  if (blogState !== undefined) {
-    data1 = blogState.map((blog, index) => ({
-      key: index,
-      name: blog.title,
 
+  console.log(bCatState);
+  const data1 = [];
+  for (let i = 0; i < bCatState?.length; i++) {
+    data1.push({
+      key: i + 1,
+      name: bCatState[i].title,
       action: (
         <>
-          <Link to="/" className="fs-3 text-danger">
+          <Link
+            to={`/admin/blog-category/${bCatState[i]._id}`}
+            className=" fs-3 text-danger"
+          >
             <BiEdit />
           </Link>
-          <Link to="/" className="ms-3 fs-3 text-danger">
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(bCatState[i]._id)}
+          >
             <AiFillDelete />
-          </Link>
+          </button>
         </>
       ),
-    }));
+    });
   }
+  const deleteBlogCategory = (e) => {
+    dispatch(deleteABlogCategory(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getBlogCategory());
+    }, 500);
+  };
   return (
     <div>
       <h3 className="mb-4 title">Blog Categories</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          deleteBlogCategory(blogCatId);
+        }}
+        title="Are you sure you want to delete this blog category?"
+      />
     </div>
   );
 };
+
 export default BlogCaList;

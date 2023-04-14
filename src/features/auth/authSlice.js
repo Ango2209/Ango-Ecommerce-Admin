@@ -4,29 +4,40 @@ import authService from "./authService";
 const getUserFromLocalStorage = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
-const userDefaultState = {
-  _id: null,
-  firstName: null,
-  lastName: null,
-  email: null,
-  mobile: null,
-  token: null,
-};
-
 const initialState = {
-  user: userDefaultState,
+  user: getUserFromLocalStorage,
+  orders: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
   message: "",
 };
-
 export const login = createAsyncThunk(
-  "user/admin-login",
-  async (user, thunkAPI) => {
-    console.log(user);
+  "auth/login",
+  async (userData, thunkAPI) => {
     try {
-      return await authService.login(user);
+      return await authService.login(userData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllOrders = createAsyncThunk(
+  "order/get-orders",
+  async (thunkAPI) => {
+    try {
+      return await authService.getAllOrders();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getOrderByUser = createAsyncThunk(
+  "order/get-order",
+  async (id, thunkAPI) => {
+    try {
+      return await authService.getOrder(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -35,7 +46,7 @@ export const login = createAsyncThunk(
 
 export const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -43,16 +54,49 @@ export const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
+        state.isError = false;
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
+        state.message = "success";
       })
       .addCase(login.rejected, (state, action) => {
-        state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.null;
-        state.message = "Rejected";
+        state.message = action.error;
+        state.isLoading = false;
+      })
+      .addCase(getAllOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllOrders.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.orders = action.payload;
+        state.message = "success";
+      })
+      .addCase(getAllOrders.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
+      })
+      .addCase(getOrderByUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getOrderByUser.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.orderbyuser = action.payload;
+        state.message = "success";
+      })
+      .addCase(getOrderByUser.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
       });
   },
 });
