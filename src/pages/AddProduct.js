@@ -104,7 +104,6 @@ const AddProduct = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      console.log(values);
       dispatch(createProducts(values));
       formik.resetForm();
       setColor(null);

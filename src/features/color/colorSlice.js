@@ -7,7 +7,6 @@ export const getColors = createAsyncThunk(
     try {
       return await colorService.getColors();
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -18,7 +17,6 @@ export const getAColor = createAsyncThunk(
     try {
       return await colorService.getAColor(id);
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -29,7 +27,6 @@ export const updateAColor = createAsyncThunk(
     try {
       return await colorService.updateAColor(id);
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -40,7 +37,6 @@ export const deleteAColor = createAsyncThunk(
     try {
       return await colorService.deleteAColor(id);
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }

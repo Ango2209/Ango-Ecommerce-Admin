@@ -48,7 +48,6 @@ const MainLayout = () => {
           mode="inline"
           defaultSelectedKeys={[""]}
           onClick={({ key }) => {
-            console.log(key);
             if (key === "singout") {
             } else {
               navigate(key);

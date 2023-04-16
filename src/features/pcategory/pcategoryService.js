@@ -13,7 +13,6 @@ const getAProductCategory = async (id) => {
   return response.data;
 };
 const updateAProductCategory = async (category) => {
-  console.log(category);
   const response = await axios.put(
     `${base_url}category/${category.id}`,
     { title: category.pCatData.title },

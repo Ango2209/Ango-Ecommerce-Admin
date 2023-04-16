@@ -35,7 +35,7 @@ const AddBlog = () => {
   const blogDesc = getAData?.description;
   const blogCategory = getAData?.category;
   const blogImages = getAData?.images;
-  console.log(getAData);
+
   useEffect(() => {
     if (getBlogId !== undefined) {
       dispatch(getABlog(getBlogId));

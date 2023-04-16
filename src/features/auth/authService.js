@@ -1,6 +1,13 @@
 import axios from "axios";
 import { config } from "../../utils/axiosConfig";
 import { base_url } from "../../utils/base_url";
+
+const register = async (user) => {
+  const response = await axios.post(`${base_url}user/register`, user);
+
+  return response.data;
+};
+
 const login = async (user) => {
   const response = await axios.post(`${base_url}user/admin-login`, user);
   if (response.data) {
@@ -8,10 +15,12 @@ const login = async (user) => {
   }
   return response.data;
 };
+
 const getAllOrders = async () => {
   const response = await axios.get(`${base_url}order/`, config);
   return response.data;
 };
+
 const getOrder = async (id) => {
   const response = await axios.get(
     `${base_url}order/get-ordersByAnUser/${id}`,
@@ -22,6 +31,7 @@ const getOrder = async (id) => {
   return response.data;
 };
 const authService = {
+  register,
   login,
   getAllOrders,
   getOrder,

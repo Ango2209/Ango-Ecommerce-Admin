@@ -44,7 +44,6 @@ export const uploadSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(uploadImg.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;

@@ -30,7 +30,7 @@ const Customers = () => {
   const customerstate = useSelector(
     (state) => state?.customer?.customers?.data?.data
   );
-  console.log(customerstate);
+
   const data1 = [];
   for (let i = 0; i < customerstate?.length; i++) {
     // if (customerstate[i].role !== "admin") {

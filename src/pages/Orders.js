@@ -39,7 +39,7 @@ const Orders = () => {
     dispatch(getAllOrders());
   }, []);
   const orderState = useSelector((state) => state?.auth?.orders);
-  console.log(orderState);
+
   const data1 = [];
   for (let i = 0; i < orderState?.length; i++) {
     data1.push({
@@ -54,10 +54,10 @@ const Orders = () => {
       date: new Date(orderState[i]?.createdAt).toLocaleString(),
       action: (
         <>
-          <Link to="/" className=" fs-3 text-danger">
+          <Link to="" className=" fs-3 text-danger">
             <BiEdit />
           </Link>
-          <Link className="ms-3 fs-3 text-danger" to="/">
+          <Link className="ms-3 fs-3 text-danger" to="">
             <AiFillDelete />
           </Link>
         </>

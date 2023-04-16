@@ -23,7 +23,7 @@ const AddBlogCat = () => {
   const newBlogCategory = useSelector((state) => state.bCategory);
   const { isSuccess, isError, isLoading, createdData, getAData, updatedData } =
     newBlogCategory;
-  console.log(getAData);
+
   const blogCatName = getAData?.data?.data?.title;
   useEffect(() => {
     if (getBlogCatId !== undefined) {

@@ -49,7 +49,6 @@ const BlogCaList = () => {
     (state) => state?.bCategory?.storageData?.data?.data
   );
 
-  console.log(bCatState);
   const data1 = [];
   for (let i = 0; i < bCatState?.length; i++) {
     data1.push({

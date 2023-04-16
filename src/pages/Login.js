@@ -29,8 +29,8 @@ const Login = () => {
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
+
   useEffect(() => {
-    console.log(user);
     if (isSuccess) {
       navigate("admin");
     } else {
@@ -75,13 +75,17 @@ const Login = () => {
         </div>
         {message === "Rejected" ? "You are not an admin" : ""}
         <button
-          // to="/admin"
           className="border-0 px-3 py-2 text-while fw-bold w-100 w-100 text-center text-decoration-none fs-5"
           style={{ background: "#ffd333" }}
           type="submit"
         >
           Login
         </button>
+        <div className="mt-3 mb-3 text-center">
+          <Link to="signup" className="">
+            You don't have an account
+          </Link>
+        </div>
       </form>
     </FormInput>
   );

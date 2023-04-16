@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
-
+import { createAction } from "@reduxjs/toolkit";
 const getUserFromLocalStorage = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
+export const resetState = createAction("Reset_all");
 const initialState = {
   user: getUserFromLocalStorage,
   orders: [],
@@ -12,6 +13,17 @@ const initialState = {
   isSuccess: false,
   message: "",
 };
+export const register = createAsyncThunk(
+  "auth/register",
+  async (userData, thunkAPI) => {
+    try {
+      userData.role = "admin";
+      return await authService.register(userData);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const login = createAsyncThunk(
   "auth/login",
   async (userData, thunkAPI) => {
@@ -50,6 +62,22 @@ export const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(register.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.newUser = action.payload;
+        state.message = "success";
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
+      })
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
@@ -97,7 +125,8 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
         state.isLoading = false;
-      });
+      })
+      .addCase(resetState, () => initialState);
   },
 });
 

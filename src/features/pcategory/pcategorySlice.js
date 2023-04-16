@@ -7,7 +7,6 @@ export const getCategory = createAsyncThunk(
     try {
       return await pCategoryService.getProductCategory();
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -18,7 +17,6 @@ export const getACategory = createAsyncThunk(
     try {
       return await pCategoryService.getAProductCategory(id);
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -29,7 +27,6 @@ export const updateACategory = createAsyncThunk(
     try {
       return await pCategoryService.updateAProductCategory(id);
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -41,7 +38,6 @@ export const deleteACategory = createAsyncThunk(
     try {
       return await pCategoryService.deleteAProductCategory(id);
     } catch (error) {
-      console.log(error);
       return thunkAPI.rejectWithValue(error);
     }
   }

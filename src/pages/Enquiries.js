@@ -58,7 +58,7 @@ const Enquiries = () => {
     dispatch(getEnquiries());
   }, []);
   const enqState = useSelector((state) => state?.enquiry?.storageData);
-  console.log(enqState);
+
   const data1 = [];
   for (let i = 0; i < enqState?.length; i++) {
     data1.push({
@@ -102,7 +102,6 @@ const Enquiries = () => {
     });
   }
   const setEnquiryStatus = (e, i) => {
-    console.log(e, i);
     const data = { id: i, enqData: e };
     dispatch(updateAEnquiry(data));
   };
