@@ -29,7 +29,7 @@ const Login = () => {
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
-
+  console.log(message.message);
   useEffect(() => {
     if (isSuccess) {
       navigate("admin");
@@ -73,7 +73,11 @@ const Login = () => {
             Forgot Password?
           </Link>
         </div>
-        {message === "Rejected" ? "You are not an admin" : ""}
+        {message.message === "Rejected" ? (
+          <p className="text-danger">You are not an admin</p>
+        ) : (
+          ""
+        )}
         <button
           className="border-0 px-3 py-2 text-while fw-bold w-100 w-100 text-center text-decoration-none fs-5"
           style={{ background: "#ffd333" }}
