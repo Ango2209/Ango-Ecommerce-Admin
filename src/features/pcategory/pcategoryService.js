@@ -8,7 +8,7 @@ const getProductCategory = async () => {
   return response.data;
 };
 const getAProductCategory = async (id) => {
-  const response = await axios.get(`${base_url}category/:id`);
+  const response = await axios.get(`${base_url}category/${id}`);
 
   return response.data;
 };

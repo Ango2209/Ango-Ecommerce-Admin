@@ -21,16 +21,10 @@ const Addcat = () => {
   const getPCatId = location.pathname.split("/")[3];
   const navigate = useNavigate();
   const newCategory = useSelector((state) => state.pcategory);
-  const categoryTitle = newCategory?.data?.data?.title;
 
-  const {
-    isSuccess,
-    isError,
-    isLoading,
-    createdData,
-
-    updatedData,
-  } = newCategory;
+  const { isSuccess, isError, isLoading, createdData, getAData, updatedData } =
+    newCategory;
+  const categoryTitle = getAData?.data?.data?.title;
   useEffect(() => {
     if (getPCatId !== undefined) {
       dispatch(getACategory(getPCatId));
